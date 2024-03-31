@@ -149,15 +149,21 @@ function find(obj){
 }
  //build cart  
     function buildvarukorg(){
-        currentLocalestorage= JSON.parse(localStorage.getItem("selectedItem"));
+        let currentLocalestorage= JSON.parse(localStorage.getItem("selectedItem"));
         let vk = document.getElementById("Varukorg-tab");
         
+        if (currentLocalestorage === null) {
+            currentLocalestorage = []; // Initialize it as an empty array
+        }
         //update number of item in cart
         let antalItemsCart = document.getElementsByClassName("badge");
-        antalItemsCart[0].innerHTML=currentLocalestorage.length
+        let antalItems = 0
 
+        //console.log("antalItemsCart" + currentLocalestorage.length);
 
-        console.log("antalitems"+currentLocalestorage.length)
+            antalItems= currentLocalestorage.length;
+        antalItemsCart[0].innerHTML=antalItems;
+       // console.log("antalitems"+currentLocalestorage.length)
         vk.innerHTML="";
         console.log(currentLocalestorage)
         let vkChild =`<table class="table" >
@@ -204,14 +210,14 @@ clrCartBtn=document.getElementById('tom-varukorg');
 clrCartBtn.addEventListener('click',clearVK);
 
 clrCartBtn=document.getElementById('till-kassa');
-clrCartBtn.addEventListener('click',kassa);
+//clrCartBtn.addEventListener('click',kassa);
 
 attachButtonListeners(); 
 }
 //Tömmar varukorg
-function kassa(){
+/*function kassa(){
     console.log("Inne i kassa");
-}
+}*/
 function clearVK(){
     console.log("inne i clear");
     localStorage.clear();
