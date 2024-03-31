@@ -1,29 +1,28 @@
 document.addEventListener('DOMContentLoaded', getProducts);
 //add addEventListener to "+" and "-" buttons in cart
 function attachButtonListeners() {
+    currentLocalestorage= JSON.parse(localStorage.getItem("selectedItem"));
+    if (currentLocalestorage === null) {
+        currentLocalestorage = []; // Initialize it as an empty array
+    }
     currentLocalestorage.forEach(function (product) {
         let minusBtn  = document.querySelector('[data-id="minus-'+product.id+'"]');
-        console.log(minusBtn);  
-        console.log("minusbtm: " + "minus-'+product.id+'");
-          minusBtn.addEventListener('click', functionM);
-              
-          let plusBtn = document.querySelector('[data-id="plus-' + product.id +'"]');
- 
-          plusBtn.addEventListener('click', functionP);
+        minusBtn.addEventListener('click', functionM);    //console.log(minusBtn);  
+        //console.log("minusbtm: " + "minus-'+product.id+'");
+        let plusBtn = document.querySelector('[data-id="plus-' + product.id +'"]');
+        plusBtn.addEventListener('click', functionP);
     });
 }
 //Funktion när man klickt på "-" button
 function functionM(em){
     em.preventDefault();
-        console.log("Minus knapp trycktes");
-    
         let id1= parseInt(em.target.getAttribute('data-id').substring(6));
-        console.log(id1);
+        //console.log(id1);
         currentLocalestorage= JSON.parse(localStorage.getItem("selectedItem"));
              
         for(let i =0; i<currentLocalestorage.length;i++){
             if(currentLocalestorage[i].id==id1){
-            console.log("bef: "+currentLocalestorage[i].qty);
+            //console.log("bef: "+currentLocalestorage[i].qty);
             if(currentLocalestorage[i].qty==1){
                 currentLocalestorage.splice(i,1);
             }
@@ -41,15 +40,14 @@ function functionM(em){
 function functionP(ep){
     ep.preventDefault();
     let id1= parseInt(ep.target.getAttribute('data-id').substring(5));
-    console.log(id1);
-    console.log("Plus knapp trycktes");
+    //console.log(id1);
     currentLocalestorage= JSON.parse(localStorage.getItem("selectedItem"));
          
     for(let i =0; i<currentLocalestorage.length;i++){
         if(currentLocalestorage[i].id==id1){
-        console.log("bef: "+currentLocalestorage[i].qty);
+        //console.log("bef: "+currentLocalestorage[i].qty);
         currentLocalestorage[i].qty= currentLocalestorage[i].qty+1;
-        console.log("after: "+currentLocalestorage[i].qty);
+        //console.log("after: "+currentLocalestorage[i].qty);
     } 
 }
     localStorage.setItem("selectedItem",JSON.stringify(currentLocalestorage));   
@@ -61,12 +59,6 @@ function getProducts() {
     fetch('https://fakestoreapi.com/products')
         .then((res) => res.json())
         .then((data) => {
-            data1=data;
-
-            console.log("data1 = " +data1[1].id);
-            
-            console.log("data1 = " +JSON.stringify(data1).valueOf(1));
-            console.log("data = " +data);
             let output = '';
             data.forEach(function (product) {
                 output += `
@@ -82,14 +74,12 @@ function getProducts() {
                     </div>
                 `;
             });
-            document.getElementById('output').innerHTML = output;
-        
-                    
+            document.getElementById('output').innerHTML = output;      
             data.forEach(function (product) {
             let buyBtn = document.getElementById(product.id);
-            console.log(product.id);
+            //console.log(product.id);
             buyBtn.addEventListener('click', function(){ 
-                saveProductToLocalstorage(product);            
+            saveProductToLocalstorage(product);            
             });    
             });
         })
@@ -97,8 +87,7 @@ function getProducts() {
 }
 // Lägger till object (of selected product) to LocaleStorage
 function saveProductToLocalstorage(product) {
-    console.log(product);
-   
+    //console.log(product);
     let obj = {
         id: product.id,
         title: product.title,
@@ -120,10 +109,10 @@ function saveProductToLocalstorage(product) {
                 if(currentLocalestorage[i].id==obj.id)
                 currentLocalestorage[i].qty= currentLocalestorage[i].qty+obj.qty;
             }
-console.log("currentLocalestorage efter + = " + JSON.stringify(currentLocalestorage))
+
+            //console.log("currentLocalestorage efter + = " + JSON.stringify(currentLocalestorage))
             //currentLocalestorage.push(obj);
-            localStorage.setItem("selectedItem",JSON.stringify(currentLocalestorage));    
-        
+            localStorage.setItem("selectedItem",JSON.stringify(currentLocalestorage));
         }
         else
         {
@@ -138,13 +127,12 @@ console.log("currentLocalestorage efter + = " + JSON.stringify(currentLocalestor
 function find(obj){
     currentLocalestorage= JSON.parse(localStorage.getItem("selectedItem"));
     let match  = currentLocalestorage.filter(item=>{if (item.id==obj.id) return true});
-    console.log("match = "+ JSON.stringify(match ))
+    //console.log("match = "+ JSON.stringify(match ))
     if(match && match[0])
     {
-        console.log("match0 = "+ match[0].id)
-
-    return match[0];
-}
+        //console.log("match0 = "+ match[0].id)
+        return match[0];
+    }
 }
   //build cart (articles, price, and others)  
     function buildvarukorg(){
@@ -159,12 +147,10 @@ function find(obj){
         let antalItems = 0
 
         //console.log("antalItemsCart" + currentLocalestorage.length);
-
-            antalItems= currentLocalestorage.length;
+        antalItems= currentLocalestorage.length;
         antalItemsCart[0].innerHTML=antalItems;
        // console.log("antalitems"+currentLocalestorage.length)
         vk.innerHTML="";
-        console.log(currentLocalestorage)
         let vkChild =`<table class="table" >
         <thead>
           <tr>
@@ -188,10 +174,11 @@ function find(obj){
             <td>${currentLocalestorage[i].price}</td>
             <td>${(currentLocalestorage[i].price * currentLocalestorage[i].qty).toFixed(2)}</td>
           </tr>`; 
-}
+
+        }
         vkChild+=`</tbody>`;
-        console.log(vkChild);
-    vk.innerHTML=vkChild;
+        //console.log(vkChild);
+        vk.innerHTML=vkChild;
     //get total summa
     if (currentLocalestorage.length>0) {
     let summa=getsumma();
@@ -200,9 +187,7 @@ function find(obj){
     <button type="button" class="tom-varukorg btn btn-danger" id="tom-varukorg" >Töm varukorg</button>
     <br>
     <br> <br>
-    <h5 id="total-sum">Total att betala ${summa} kr</h5>
-    
-    
+    <h5 id="total-sum">Total att betala ${summa} kr</h5>    
 </div>
 <a href="form.html" type="button" class="btn btn-success" id="till-kassa" >Till kassan</a>`;
 clrCartBtn=document.getElementById('tom-varukorg');
@@ -216,10 +201,9 @@ attachButtonListeners();
 }
 //Tömmar varukorg
 function clearVK(){
-    console.log("inne i clear");
+     //console.log("inne i clear");
     localStorage.clear();
     buildvarukorg();
-    
 }
 //get total summa på varor i varukorg
 function getsumma(){
@@ -231,6 +215,6 @@ function getsumma(){
     for(let i =0; i<currentLocalestorage.length;i++){
                 s+=(currentLocalestorage[i].price) * (currentLocalestorage[i].qty);
             }
-            console.log("s=" +s);
+            //console.log("s=" +s);
             return s.toFixed(2);
 }
