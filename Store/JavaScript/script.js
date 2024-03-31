@@ -228,7 +228,10 @@ function clearVK(){
 function getsumma(){
     let s=0;
     currentLocalestorage= JSON.parse(localStorage.getItem("selectedItem"));
-            for(let i =0; i<currentLocalestorage.length;i++){
+    if (currentLocalestorage === null) {
+        currentLocalestorage = []; // Initialize it as an empty array
+    }        
+    for(let i =0; i<currentLocalestorage.length;i++){
                 s+=(currentLocalestorage[i].price) * parseInt(currentLocalestorage[i].qty);
             }
             console.log("s=" +s);
