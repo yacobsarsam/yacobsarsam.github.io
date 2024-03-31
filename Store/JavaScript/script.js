@@ -1,10 +1,5 @@
-let CART = {
-    KEY: 'selectedItem',
-    content: []
-}
-
 document.addEventListener('DOMContentLoaded', getProducts);
-
+//add addEventListener to "+" and "-" buttons in cart
 function attachButtonListeners() {
     currentLocalestorage.forEach(function (product) {
         let minusBtn  = document.querySelector('[data-id="minus-'+product.id+'"]');
@@ -17,6 +12,7 @@ function attachButtonListeners() {
           plusBtn.addEventListener('click', functionP);
     });
 }
+//Funktion när man klickt på "-" button
 function functionM(em){
     em.preventDefault();
         console.log("Minus knapp trycktes");
@@ -41,7 +37,7 @@ function functionM(em){
         
         buildvarukorg();
     }
-
+//Funktion när man klickt på "+" button
 function functionP(ep){
     ep.preventDefault();
     let id1= parseInt(ep.target.getAttribute('data-id').substring(5));
@@ -60,6 +56,7 @@ function functionP(ep){
     
     buildvarukorg();
 }
+//get products from API
 function getProducts() {
     fetch('https://fakestoreapi.com/products')
         .then((res) => res.json())
@@ -98,6 +95,7 @@ function getProducts() {
         })
         .catch(error => console.error('Error fetching data:', error));
 }
+// Lägger till object (of selected product) to LocaleStorage
 function saveProductToLocalstorage(product) {
     console.log(product);
    
@@ -136,6 +134,7 @@ console.log("currentLocalestorage efter + = " + JSON.stringify(currentLocalestor
     }
     buildvarukorg();
 }
+//Find object from LocaleStorage and return True if find
 function find(obj){
     currentLocalestorage= JSON.parse(localStorage.getItem("selectedItem"));
     let match  = currentLocalestorage.filter(item=>{if (item.id==obj.id) return true});
@@ -147,7 +146,7 @@ function find(obj){
     return match[0];
 }
 }
- //build cart  
+  //build cart (articles, price, and others)  
     function buildvarukorg(){
         let currentLocalestorage= JSON.parse(localStorage.getItem("selectedItem"));
         let vk = document.getElementById("Varukorg-tab");
@@ -187,14 +186,14 @@ function find(obj){
               </div>      
             </td>
             <td>${currentLocalestorage[i].price}</td>
-            <td>${currentLocalestorage[i].price * currentLocalestorage[i].qty}</td>
+            <td>${(currentLocalestorage[i].price * currentLocalestorage[i].qty).toFixed(2)}</td>
           </tr>`; 
-          // Call function to attach event listeners after buttons are generated    
 }
         vkChild+=`</tbody>`;
         console.log(vkChild);
     vk.innerHTML=vkChild;
     //get total summa
+    if (currentLocalestorage.length>0) {
     let summa=getsumma();
     let vk1 = document.getElementById("Varukorg-tab");
     vk1.innerHTML+=`<div id="cart-foot">
@@ -211,20 +210,18 @@ clrCartBtn.addEventListener('click',clearVK);
 
 clrCartBtn=document.getElementById('till-kassa');
 //clrCartBtn.addEventListener('click',kassa);
-
+}
+// Call function to attach event listeners after buttons are generated    
 attachButtonListeners(); 
 }
 //Tömmar varukorg
-/*function kassa(){
-    console.log("Inne i kassa");
-}*/
 function clearVK(){
     console.log("inne i clear");
     localStorage.clear();
     buildvarukorg();
     
 }
-//get summa på varor  varukorg
+//get total summa på varor i varukorg
 function getsumma(){
     let s=0;
     currentLocalestorage= JSON.parse(localStorage.getItem("selectedItem"));
@@ -232,8 +229,8 @@ function getsumma(){
         currentLocalestorage = []; // Initialize it as an empty array
     }        
     for(let i =0; i<currentLocalestorage.length;i++){
-                s+=(currentLocalestorage[i].price) * parseInt(currentLocalestorage[i].qty);
+                s+=(currentLocalestorage[i].price) * (currentLocalestorage[i].qty);
             }
             console.log("s=" +s);
-            return s;
+            return s.toFixed(2);
 }
