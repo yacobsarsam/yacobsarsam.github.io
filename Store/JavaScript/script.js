@@ -1,17 +1,22 @@
+let CART = {
+    KEY: 'selectedItem',
+    content: []
+}
+
 document.addEventListener('DOMContentLoaded', getProducts);
-//add addEventListener to "+" and "-" buttons in cart
+
 function attachButtonListeners() {
     currentLocalestorage.forEach(function (product) {
         let minusBtn  = document.querySelector('[data-id="minus-'+product.id+'"]');
         console.log(minusBtn);  
         console.log("minusbtm: " + "minus-'+product.id+'");
-        minusBtn.addEventListener('click', functionM);
+          minusBtn.addEventListener('click', functionM);
               
-        let plusBtn = document.querySelector('[data-id="plus-' + product.id +'"]');
-        plusBtn.addEventListener('click', functionP);
+          let plusBtn = document.querySelector('[data-id="plus-' + product.id +'"]');
+ 
+          plusBtn.addEventListener('click', functionP);
     });
 }
-//Funktion när man klickt på "-" button
 function functionM(em){
     em.preventDefault();
         console.log("Minus knapp trycktes");
@@ -37,7 +42,6 @@ function functionM(em){
         buildvarukorg();
     }
 
-    //Funktion när man klickt på "+" button
 function functionP(ep){
     ep.preventDefault();
     let id1= parseInt(ep.target.getAttribute('data-id').substring(5));
@@ -56,7 +60,6 @@ function functionP(ep){
     
     buildvarukorg();
 }
-//get products from API
 function getProducts() {
     fetch('https://fakestoreapi.com/products')
         .then((res) => res.json())
@@ -95,31 +98,37 @@ function getProducts() {
         })
         .catch(error => console.error('Error fetching data:', error));
 }
-// Lägger till object (of selected product) to LocaleStorage
 function saveProductToLocalstorage(product) {
     console.log(product);
+   
     let obj = {
         id: product.id,
         title: product.title,
         qty: 1,
         price: product.price
     };
-    if(localStorage.getItem("selectedItem")==null){   
+    if(localStorage.getItem("selectedItem")==null){
+   
         let currentLocalestorage=[];
         currentLocalestorage.push(obj);
+         
         localStorage.setItem("selectedItem",JSON.stringify(currentLocalestorage));
     }
     else{
-        if(find(obj)){
+        if(find(obj))
+        {
             currentLocalestorage= JSON.parse(localStorage.getItem("selectedItem"));
             for(let i =0; i<currentLocalestorage.length;i++){
                 if(currentLocalestorage[i].id==obj.id)
                 currentLocalestorage[i].qty= currentLocalestorage[i].qty+obj.qty;
             }
+console.log("currentLocalestorage efter + = " + JSON.stringify(currentLocalestorage))
             //currentLocalestorage.push(obj);
             localStorage.setItem("selectedItem",JSON.stringify(currentLocalestorage));    
+        
         }
-        else{
+        else
+        {
             currentLocalestorage= JSON.parse(localStorage.getItem("selectedItem"));
             currentLocalestorage.push(obj);
             localStorage.setItem("selectedItem",JSON.stringify(currentLocalestorage));    
@@ -127,7 +136,6 @@ function saveProductToLocalstorage(product) {
     }
     buildvarukorg();
 }
-//Find object from LocaleStorage and return True if find
 function find(obj){
     currentLocalestorage= JSON.parse(localStorage.getItem("selectedItem"));
     let match  = currentLocalestorage.filter(item=>{if (item.id==obj.id) return true});
@@ -139,7 +147,7 @@ function find(obj){
     return match[0];
 }
 }
- //build cart (articles, price, and others)
+ //build cart  
     function buildvarukorg(){
         currentLocalestorage= JSON.parse(localStorage.getItem("selectedItem"));
         let vk = document.getElementById("Varukorg-tab");
@@ -187,7 +195,9 @@ function find(obj){
     <button type="button" class="tom-varukorg btn btn-danger" id="tom-varukorg" >Töm varukorg</button>
     <br>
     <br> <br>
-    <h5 id="total-sum">Total att betala ${summa.toFixed(2)} kr</h5>
+    <h5 id="total-sum">Total att betala ${summa} kr</h5>
+    
+    
 </div>
 <a href="form.html" type="button" class="btn btn-success" id="till-kassa" >Till kassan</a>`;
 clrCartBtn=document.getElementById('tom-varukorg');
@@ -199,13 +209,16 @@ clrCartBtn.addEventListener('click',kassa);
 attachButtonListeners(); 
 }
 //Tömmar varukorg
+function kassa(){
+    console.log("Inne i kassa");
+}
 function clearVK(){
     console.log("inne i clear");
     localStorage.clear();
     buildvarukorg();
     
 }
-//get total summa på varor i varukorg
+//get summa på varor  varukorg
 function getsumma(){
     let s=0;
     currentLocalestorage= JSON.parse(localStorage.getItem("selectedItem"));
